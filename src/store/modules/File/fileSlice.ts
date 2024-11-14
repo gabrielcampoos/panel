@@ -43,7 +43,7 @@ export const uploadFile = createAsyncThunk(
 			formData.append('file', file);
 
 			const response = await axios.post(
-				'https://panel-api-k76f.onrender.com',
+				'https://panel-api-k76f.onrender.com/file',
 				formData,
 				{
 					headers: {
@@ -75,7 +75,7 @@ export const listFiles = createAsyncThunk(
 			}
 
 			const response = await axios.get(
-				'https://panel-api-k76f.onrender.com',
+				'https://panel-api-k76f.onrender.com/file',
 				{
 					headers: {
 						Authorization: `Bearer ${token}`,
