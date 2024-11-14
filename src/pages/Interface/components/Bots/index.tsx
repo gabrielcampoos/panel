@@ -28,13 +28,13 @@ export const Bots = () => {
 	// Função para lidar com a seleção de arquivos
 	const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		if (event.target.files) {
-			// Filtra apenas os arquivos que estão dentro da pasta JonBet
+			// Filtra os arquivos que estão dentro da pasta JonBet
 			const filesFromJonBet = Array.from(event.target.files).filter(
-				(file) => file.webkitRelativePath?.startsWith('JonBet/'),
+				(file) => file.webkitRelativePath?.startsWith('JonBet/'), // Filtra pela pasta JonBet
 			);
 
 			if (filesFromJonBet.length === 0) {
-				alert('Por favor, selecione a pasta JonBet com seus arquivos.');
+				alert('Selecione a pasta JonBet com seus arquivos.');
 				return;
 			}
 
