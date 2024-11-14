@@ -43,7 +43,7 @@ export const uploadFile = createAsyncThunk(
 			formData.append('file', file);
 
 			const response = await axios.post(
-				'http://localhost:8080/file',
+				'https://panel-api-k76f.onrender.com',
 				formData,
 				{
 					headers: {
@@ -74,11 +74,14 @@ export const listFiles = createAsyncThunk(
 				return rejectWithValue('Token inválido ou expirado');
 			}
 
-			const response = await axios.get('http://localhost:8080/file', {
-				headers: {
-					Authorization: `Bearer ${token}`,
+			const response = await axios.get(
+				'https://panel-api-k76f.onrender.com',
+				{
+					headers: {
+						Authorization: `Bearer ${token}`,
+					},
 				},
-			});
+			);
 
 			return response.data;
 		} catch (error) {
