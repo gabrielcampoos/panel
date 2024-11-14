@@ -19,7 +19,7 @@ export const Bots = () => {
 	const dispatch = useAppDispatch();
 	const [loading, setLoading] = useState(false); // Estado de carregamento do download
 	const [uploading, setUploading] = useState(false); // Estado de carregamento do upload
-	const [selectedFiles, setSelectedFiles] = useState<File[]>([]); // Arquivos selecionados para upload
+	const [selectedFile, setSelectedFile] = useState<File | null>(null); // Arquivo selecionado para upload
 
 	useEffect(() => {
 		dispatch(listFiles());
@@ -28,35 +28,28 @@ export const Bots = () => {
 	// Função para lidar com a seleção de arquivos
 	const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		if (event.target.files) {
-			// Filtra os arquivos que estão dentro da pasta JonBet
-			const filesFromJonBet = Array.from(event.target.files).filter(
-				(file) => file.webkitRelativePath?.startsWith('JonBet/'), // Filtra pela pasta JonBet
-			);
+			const file = event.target.files[0]; // Assume que o usuário seleciona um único arquivo .rar
 
-			if (filesFromJonBet.length === 0) {
-				alert('Selecione a pasta JonBet com seus arquivos.');
-				return;
+			// Verifica se o arquivo tem a extensão .rar
+			if (file.name.endsWith('.rar')) {
+				setSelectedFile(file);
+			} else {
+				alert('Selecione um arquivo .rar');
 			}
-
-			setSelectedFiles(filesFromJonBet);
 		}
 	};
 
 	// Função para fazer o upload
 	const handleUpload = async () => {
-		if (selectedFiles.length === 0) {
-			alert('Selecione pelo menos um arquivo para upload.');
+		if (!selectedFile) {
+			alert('Selecione um arquivo .rar para upload.');
 			return;
 		}
 
 		setUploading(true);
 
 		const formData = new FormData();
-
-		// Adiciona os arquivos ao FormData
-		selectedFiles.forEach((file) => {
-			formData.append('files', file);
-		});
+		formData.append('files', selectedFile); // Envia o arquivo .rar
 
 		try {
 			const token = localStorage.getItem('userLogged');
@@ -66,7 +59,7 @@ export const Bots = () => {
 				return;
 			}
 
-			// Envia os arquivos para o backend
+			// Envia o arquivo .rar para o backend
 			const response = await fetch(
 				'https://panel-api-k76f.onrender.com/upload',
 				{
@@ -83,8 +76,8 @@ export const Bots = () => {
 			}
 
 			// Sucesso no upload
-			alert('Arquivos carregados com sucesso!');
-			setSelectedFiles([]); // Limpa os arquivos selecionados
+			alert('Arquivo carregado com sucesso!');
+			setSelectedFile(null); // Limpa o arquivo selecionado
 		} catch (error) {
 			console.error('Erro ao realizar o upload:', error);
 			alert('Erro ao realizar o upload');
@@ -115,17 +108,22 @@ export const Bots = () => {
 				},
 			});
 
-			if (!response.ok) {
+			if (response.ok) {
+				const contentType = response.headers.get('Content-Type');
+				console.log('Tipo de conteúdo:', contentType); // Verifique o tipo de conteúdo retornado
+				if (contentType?.startsWith('application/')) {
+					const blob = await response.blob();
+					const link = document.createElement('a');
+					link.href = URL.createObjectURL(blob);
+					link.download = 'JonBet.rar';
+					link.click();
+					URL.revokeObjectURL(link.href);
+				} else {
+					throw new Error('Resposta inesperada do servidor');
+				}
+			} else {
 				throw new Error('Erro ao baixar o arquivo');
 			}
-
-			const blob = await response.blob();
-			const link = document.createElement('a');
-			link.href = URL.createObjectURL(blob);
-			link.download = 'JonBet.rar';
-			link.click();
-
-			URL.revokeObjectURL(link.href);
 		} catch (error) {
 			console.error('Erro ao realizar o download:', error);
 		} finally {
@@ -140,12 +138,9 @@ export const Bots = () => {
 				{/* Usando um <input> para o upload de arquivos */}
 				<input
 					type="file"
-					multiple
 					onChange={handleFileChange}
 					style={{ display: 'none' }} // Ocultar o campo de input
 					id="file-upload"
-					// Adiciona o atributo webkitdirectory usando `as any` para evitar o erro de tipo
-					{...({ webkitdirectory: true } as any)}
 				/>
 
 				<label htmlFor="file-upload">
@@ -157,14 +152,14 @@ export const Bots = () => {
 						{uploading ? (
 							<CircularProgress size={24} />
 						) : (
-							'Selecionar Arquivos'
+							'Selecionar Arquivo .rar'
 						)}
 					</Button>
 				</label>
 
 				<Button
 					onClick={handleUpload}
-					disabled={uploading || selectedFiles.length === 0}
+					disabled={uploading || !selectedFile}
 					variant="contained"
 					sx={{ marginTop: 2 }}
 				>
