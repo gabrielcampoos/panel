@@ -90,8 +90,9 @@ export const Bots = () => {
 	const handleDownload = async () => {
 		try {
 			setLoading(true);
-			const fileUrl =
-				'https://panel-api-k76f.onrender.com/file/download-jonbet';
+
+			// URL do backend definida na variável de ambiente
+			const fileUrl = `${import.meta.env.VITE_API_URL}/file/download-jonbet`;
 
 			const token = localStorage.getItem('userLogged');
 
@@ -101,6 +102,7 @@ export const Bots = () => {
 				return;
 			}
 
+			// Requisição para o backend
 			const response = await fetch(fileUrl, {
 				method: 'GET',
 				headers: {
@@ -109,20 +111,16 @@ export const Bots = () => {
 			});
 
 			if (response.ok) {
-				const contentType = response.headers.get('Content-Type');
-				console.log('Tipo de conteúdo:', contentType); // Verifique o tipo de conteúdo retornado
-				if (contentType?.startsWith('application/')) {
-					const blob = await response.blob();
-					const link = document.createElement('a');
-					link.href = URL.createObjectURL(blob);
-					link.download = 'JonBet.rar';
-					link.click();
-					URL.revokeObjectURL(link.href);
-				} else {
-					throw new Error('Resposta inesperada do servidor');
-				}
+				const blob = await response.blob();
+				const link = document.createElement('a');
+				link.href = URL.createObjectURL(blob);
+				link.download = 'JonBet.rar';
+				document.body.appendChild(link);
+				link.click();
+				URL.revokeObjectURL(link.href);
+				document.body.removeChild(link);
 			} else {
-				throw new Error('Erro ao baixar o arquivo');
+				console.error('Erro ao baixar o arquivo:', response.status);
 			}
 		} catch (error) {
 			console.error('Erro ao realizar o download:', error);
