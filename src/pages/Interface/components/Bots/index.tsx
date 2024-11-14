@@ -20,6 +20,7 @@ export const Bots = () => {
 	const [loading, setLoading] = useState(false); // Estado de carregamento do download
 	const [uploading, setUploading] = useState(false); // Estado de carregamento do upload
 	const [selectedFile, setSelectedFile] = useState<File | null>(null); // Arquivo selecionado para upload
+	const [downloadLoading, setDownloadLoading] = useState<string | null>(null); // Agora aceita string ou null
 
 	useEffect(() => {
 		dispatch(listFiles());
@@ -87,9 +88,9 @@ export const Bots = () => {
 	};
 
 	// Função para fazer o download
-	const handleDownload = async () => {
+	const handleDownload = async (fileId: string) => {
 		try {
-			setLoading(true);
+			setDownloadLoading(fileId); // Define o estado de carregamento para o arquivo em questão
 
 			// URL do backend definida na variável de ambiente
 			const fileUrl = `${import.meta.env.VITE_API_URL}/file/download-jonbet`;
@@ -98,7 +99,7 @@ export const Bots = () => {
 
 			if (!token) {
 				console.error('Token de autenticação não encontrado');
-				setLoading(false);
+				setDownloadLoading(null); // Reseta o estado de carregamento
 				return;
 			}
 
@@ -114,7 +115,10 @@ export const Bots = () => {
 				const blob = await response.blob();
 				const link = document.createElement('a');
 				link.href = URL.createObjectURL(blob);
-				link.download = 'JonBet.rar';
+
+				// Ajuste para garantir que o nome do arquivo será 'JonBet.zip'
+				link.download = 'JonBet.zip'; // Aqui definimos o nome correto do arquivo
+
 				document.body.appendChild(link);
 				link.click();
 				URL.revokeObjectURL(link.href);
@@ -125,7 +129,7 @@ export const Bots = () => {
 		} catch (error) {
 			console.error('Erro ao realizar o download:', error);
 		} finally {
-			setLoading(false);
+			setDownloadLoading(null); // Reseta o estado de carregamento quando o download terminar
 		}
 	};
 
@@ -185,12 +189,17 @@ export const Bots = () => {
 								</CardContent>
 								<CardActions>
 									<Button
-										disabled={!userState.active || loading}
+										disabled={
+											userState.active === false ||
+											downloadLoading !== null
+										} // Desativa o botão durante o download
 										size="small"
 										variant="contained"
-										onClick={handleDownload}
+										onClick={() => handleDownload(file.id)} // Passa o id do arquivo para o handleDownload
 									>
-										{loading ? 'Baixando...' : 'Download'}
+										{downloadLoading === file.id
+											? 'Baixando...'
+											: 'Download'}{' '}
 									</Button>
 								</CardActions>
 							</Card>
