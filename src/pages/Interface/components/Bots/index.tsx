@@ -39,6 +39,8 @@ export const Bots = () => {
 			document.body.appendChild(link);
 			link.click();
 			document.body.removeChild(link);
+
+			alert('Seu download vai começar em instantes, por favor aguarde.');
 		} catch (error) {
 			console.error('Erro ao realizar o download:', error);
 		} finally {
