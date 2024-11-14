@@ -22,7 +22,8 @@ export const Bots = () => {
 
 	const handleDownload = async () => {
 		try {
-			const fileUrl = 'http://localhost:8080/file/download-jonbet';
+			const fileUrl =
+				'https://panel-api-k76f.onrender.com/file/download-jonbet';
 
 			const token = localStorage.getItem('userLogged');
 
