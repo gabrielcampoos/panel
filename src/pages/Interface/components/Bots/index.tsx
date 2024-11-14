@@ -28,7 +28,17 @@ export const Bots = () => {
 	// Função para lidar com a seleção de arquivos
 	const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		if (event.target.files) {
-			setSelectedFiles(Array.from(event.target.files));
+			// Converte para Array e filtra para manter apenas arquivos da pasta JonBet
+			const filesFromJonBet = Array.from(event.target.files).filter(
+				(file) => file.webkitRelativePath?.includes('JonBet'),
+			);
+
+			if (filesFromJonBet.length === 0) {
+				alert('Por favor, selecione a pasta JonBet.');
+				return;
+			}
+
+			setSelectedFiles(filesFromJonBet);
 		}
 	};
 
