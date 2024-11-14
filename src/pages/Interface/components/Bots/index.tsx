@@ -9,6 +9,7 @@ import {
 	CircularProgress,
 } from '@mui/material';
 import { useEffect, useState } from 'react';
+
 import { useAppDispatch, useAppSelector } from '../../../../store/hooks';
 import { listFiles } from '../../../../store/modules/File/fileSlice';
 
@@ -133,7 +134,10 @@ export const Bots = () => {
 					onChange={handleFileChange}
 					style={{ display: 'none' }} // Ocultar o campo de input
 					id="file-upload"
+					// Adiciona o atributo webkitdirectory usando `as any` para evitar o erro de tipo
+					{...({ webkitdirectory: true } as any)}
 				/>
+
 				<label htmlFor="file-upload">
 					<Button
 						component="span"
