@@ -46,18 +46,28 @@ export const Login = () => {
 
 		const userData = { cpf, password };
 		dispatch(showLoading());
-		const result = await dispatch(loginUser(userData));
 
-		if (loginUser.fulfilled.match(result) && result.payload.success) {
-			enqueueSnackbar('Login realizado com sucesso!', {
-				variant: 'success',
+		try {
+			const result = await dispatch(loginUser(userData));
+
+			// Verifica se a resposta é bem-sucedida e contém os dados necessários
+			if (loginUser.fulfilled.match(result) && result.payload.success) {
+				enqueueSnackbar('Login realizado com sucesso!', {
+					variant: 'success',
+				});
+
+				// Navegar para a página de interface
+				navigate('/interface');
+			} else {
+				enqueueSnackbar('CPF ou Senha errados.', { variant: 'error' });
+			}
+		} catch (error) {
+			enqueueSnackbar('Ocorreu um erro ao fazer login.', {
+				variant: 'error',
 			});
-			navigate('/interface');
-		} else {
-			enqueueSnackbar('CPF ou Senha errados.', { variant: 'error' });
+		} finally {
+			dispatch(hideLoading());
 		}
-
-		dispatch(hideLoading());
 	};
 
 	return (
