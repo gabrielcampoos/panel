@@ -58,14 +58,22 @@ export const loginUser = createAsyncThunk(
 		try {
 			const response = await serviceApi.post('/login', login);
 
-			const responseApi = response.data.data as ResponseLogin;
+			// Estrutura da resposta
+			const responseApi = response.data;
 
+			// Verifique se 'responseApi' tem a estrutura esperada e retorne ela
 			return responseApi;
 		} catch (error) {
 			if (error instanceof AxiosError) {
-				const response = error.response?.data.data as ResponseLogin;
+				const response = error.response?.data; // Verifique que 'data' contém os dados esperados
 
-				return response;
+				// Se houver resposta do erro, retorne ela, se não, um erro genérico
+				return (
+					response || {
+						success: false,
+						message: 'Erro inesperado.',
+					}
+				);
 			}
 
 			return {
@@ -224,17 +232,16 @@ export const userSlice = createSlice({
 		});
 
 		builder.addCase(loginUser.fulfilled, (state, action) => {
-			const payload = action.payload as ResponseLogin;
+			const payload = action.payload;
 
 			if (payload.success && payload.data) {
 				const currentDate = new Date();
-
 				const accessExpiration = new Date(
 					payload.data.accessExpiration,
 				);
-
 				const isActive = currentDate < accessExpiration;
 
+				// Salve o token e outros dados no localStorage
 				localStorage.setItem('userLogged', payload.data.token);
 
 				return {
@@ -251,6 +258,7 @@ export const userSlice = createSlice({
 				};
 			}
 
+			// Caso a resposta não tenha sucesso, limpe o estado
 			if (!payload.success) {
 				return initialState;
 			}

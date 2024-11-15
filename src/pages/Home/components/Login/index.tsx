@@ -50,7 +50,7 @@ export const Login = () => {
 		try {
 			const result = await dispatch(loginUser(userData));
 
-			// Verifica se a resposta é bem-sucedida e contém os dados necessários
+			// Verifica se a resposta foi bem-sucedida (check the payload.success)
 			if (loginUser.fulfilled.match(result) && result.payload.success) {
 				enqueueSnackbar('Login realizado com sucesso!', {
 					variant: 'success',
