@@ -56,9 +56,7 @@ export const Login = () => {
 					variant: 'success',
 				});
 
-				setTimeout(() => {
-					navigate('/interface');
-				}, 3000);
+				navigate('/interface');
 			} else {
 				enqueueSnackbar('CPF ou Senha errados.', { variant: 'error' });
 			}
