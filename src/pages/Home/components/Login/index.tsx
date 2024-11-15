@@ -71,94 +71,90 @@ export const Login = () => {
 
 	return (
 		<>
-			{(smDown && (
+			{/* {(smDown && (
 				<>
 					<LoginSm />
 				</>
-			)) || (
+			)) || ( */}
+			<Box
+				sx={{
+					width: '100dvw',
+					height: '100dvh',
+					display: 'flex',
+					justifyContent: 'center',
+					alignItems: 'center',
+					background: '#CEEFFF',
+					flexDirection: 'column',
+					gap: 3,
+				}}
+			>
 				<Box
+					component="img"
+					src={Logo}
+					alt="Logo"
+					sx={{ width: 150, height: 150, mb: 2 }}
+				/>
+
+				<Box
+					component="form"
+					onSubmit={handleLogin}
 					sx={{
-						width: '100dvw',
-						height: '100dvh',
 						display: 'flex',
-						justifyContent: 'center',
-						alignItems: 'center',
-						background: '#CEEFFF',
 						flexDirection: 'column',
-						gap: 3,
+						alignItems: 'center',
+						width: '100%',
+						maxWidth: 400,
+						p: 3,
+						borderRadius: 1,
+						boxShadow: 3,
+						background: '#fff',
+						gap: 2,
 					}}
 				>
-					<Box
-						component="img"
-						src={Logo}
-						alt="Logo"
-						sx={{ width: 150, height: 150, mb: 2 }}
+					<Typography variant="h5" color="textPrimary" gutterBottom>
+						Login
+					</Typography>
+
+					<TextField
+						label="CPF"
+						variant="outlined"
+						fullWidth
+						value={cpf}
+						onChange={(e) => setCpf(e.target.value)}
+						required
 					/>
 
-					<Box
-						component="form"
-						onSubmit={handleLogin}
+					<TextField
+						label="Senha"
+						variant="outlined"
+						type="password"
+						fullWidth
+						value={password}
+						onChange={(e) => setPassword(e.target.value)}
+						required
+					/>
+
+					<Button
+						type="submit"
+						variant="contained"
+						color="primary"
+						fullWidth
 						sx={{
-							display: 'flex',
-							flexDirection: 'column',
-							alignItems: 'center',
-							width: '100%',
-							maxWidth: 400,
-							p: 3,
-							borderRadius: 1,
-							boxShadow: 3,
-							background: '#fff',
-							gap: 2,
+							backgroundColor: '#040074',
+							':hover': {
+								backgroundColor: '#030061',
+							},
 						}}
 					>
-						<Typography
-							variant="h5"
-							color="textPrimary"
-							gutterBottom
-						>
-							Login
-						</Typography>
-
-						<TextField
-							label="CPF"
-							variant="outlined"
-							fullWidth
-							value={cpf}
-							onChange={(e) => setCpf(e.target.value)}
-							required
-						/>
-
-						<TextField
-							label="Senha"
-							variant="outlined"
-							type="password"
-							fullWidth
-							value={password}
-							onChange={(e) => setPassword(e.target.value)}
-							required
-						/>
-
-						<Button
-							type="submit"
-							variant="contained"
-							color="primary"
-							fullWidth
-							sx={{
-								backgroundColor: '#040074',
-								':hover': {
-									backgroundColor: '#030061',
-								},
-							}}
-						>
-							{loadingState.open ? (
-								<CircularProgress size={24} />
-							) : (
-								'Entrar'
-							)}
-						</Button>
-					</Box>
+						{loadingState.open ? (
+							<CircularProgress size={24} />
+						) : (
+							'Entrar'
+						)}
+					</Button>
 				</Box>
-			)}
+			</Box>
+			{/* )} */}
 		</>
 	);
 };
