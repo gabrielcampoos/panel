@@ -62,7 +62,7 @@ export const loginUser = createAsyncThunk(
 			const responseApi = response.data;
 
 			// Verifique se 'responseApi' tem a estrutura esperada e retorne ela
-			return responseApi;
+			return responseApi.data;
 		} catch (error) {
 			if (error instanceof AxiosError) {
 				const response = error.response?.data; // Verifique que 'data' contém os dados esperados
