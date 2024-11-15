@@ -58,12 +58,12 @@ export const loginUser = createAsyncThunk(
 		try {
 			const response = await serviceApi.post('/login', login);
 
-			const responseApi = response.data as ResponseLogin;
+			const responseApi = response.data.data as ResponseLogin;
 
 			return responseApi;
 		} catch (error) {
 			if (error instanceof AxiosError) {
-				const response = error.response?.data as ResponseLogin;
+				const response = error.response?.data.data as ResponseLogin;
 
 				return response;
 			}
